@@ -1,6 +1,13 @@
 .App {
 	min-height: 100vh;
 }
+
+.signin {
+	min-height: 100vh;
+	min-width: 100%;
+	justify-content: center;
+}
+
 .signup {
 	min-height: 100vh;
 }

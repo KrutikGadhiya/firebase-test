@@ -4,13 +4,13 @@ import { GoogleAuthProvider, getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAQs5G0mEisNr8WHA_JrbbmTzX4AMcTDp0",
-  authDomain: "react-flutter-71e7b.firebaseapp.com",
-  projectId: "react-flutter-71e7b",
-  storageBucket: "react-flutter-71e7b.appspot.com",
-  messagingSenderId: "53214210771",
-  appId: "1:53214210771:web:7677b5b4048f9004a24226",
-  measurementId: "G-50ZCB1W19K"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECTID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENTID
 };
 
 const app = initializeApp(firebaseConfig);
