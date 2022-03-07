@@ -1,19 +1,63 @@
 import React, { useState } from "react";
 import { Button, Col, Divider, Input, Row, Typography } from "antd";
 import { GoogleOutlined } from "@ant-design/icons";
+import { auth, provider } from "../firebase-config";
+import { addDoc } from "firebase/firestore";
+import {
+	applyActionCode,
+	createUserWithEmailAndPassword,
+	signInWithPopup,
+} from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+
+import { usersCollectionRef } from "../config/collections";
 
 const { Title, Text } = Typography;
 
 const SignUp = () => {
-	const [fields, setFields] = useState({ email: "", pass: "" });
+	const navigate = useNavigate();
+	const [fields, setFields] = useState({
+		email: "",
+		pass: "",
+		name: "",
+		mobile: 0,
+	});
+	const [btnIsLoading, setBtnIsLoading] = useState(false);
+
 	const handleChange = (key) => (e) => {
 		setFields({ ...fields, [key]: e.target.value });
 	};
-	const handleSubmit = (e) => {
+
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		console.log(fields);
+		setBtnIsLoading(true);
+		const user = await createUserWithEmailAndPassword(
+			auth,
+			fields.email,
+			fields.pass
+		);
+		// user.sendEmailVerification();
+		await user.user.sendEmailVerification();
+		// auth.currentUser.sendEmailVerification();
+
+		const usr = await addDoc(usersCollectionRef, {
+			email: fields.email,
+			name: fields.name,
+			mobile: fields.mobile,
+		});
+
+		console.log(user);
+		setBtnIsLoading(false);
 		setFields({ email: "", pass: "" });
+		navigate("/");
 	};
+
+	const signInWithGoogle = async () => {
+		const res = await signInWithPopup(auth, provider);
+		// console.log(res);
+		navigate("/dashboard");
+	};
+
 	return (
 		<>
 			<Row justify="center" align="middle" className="signup">
@@ -28,6 +72,33 @@ const SignUp = () => {
 							<Row className="input-control" justify="center">
 								<Col lg={{ span: 8 }} sm={{ span: 16 }} xs={{ span: 20 }}>
 									<Input
+										required
+										className="input-field"
+										size="large"
+										type={"text"}
+										placeholder="Full Name"
+										value={fields.name}
+										onChange={handleChange("name")}
+									/>
+								</Col>
+							</Row>
+							<Row className="input-control" justify="center">
+								<Col lg={{ span: 8 }} sm={{ span: 16 }} xs={{ span: 20 }}>
+									<Input
+										required
+										className="input-field"
+										size="large"
+										type={"tel"}
+										placeholder="8974514268"
+										value={fields.mobile}
+										onChange={handleChange("mobile")}
+									/>
+								</Col>
+							</Row>
+							<Row className="input-control" justify="center">
+								<Col lg={{ span: 8 }} sm={{ span: 16 }} xs={{ span: 20 }}>
+									<Input
+										required
 										className="input-field"
 										size="large"
 										type={"email"}
@@ -40,6 +111,7 @@ const SignUp = () => {
 							<Row className="input-control" justify="center">
 								<Col lg={{ span: 8 }} sm={{ span: 16 }} xs={{ span: 20 }}>
 									<Input.Password
+										required
 										className="input-field"
 										size="large"
 										type={"password"}
@@ -55,12 +127,18 @@ const SignUp = () => {
 										htmlType="submit"
 										className="btn"
 										size="large"
+										loading={btnIsLoading}
 										type="primary">
 										Signup
 									</Button>
 								</Col>
 							</Row>
 						</form>
+						<div className="links">
+							<Button onClick={() => navigate("/")} type="link">
+								Already have an account? Login
+							</Button>
+						</div>
 
 						<Row align="center" justify="center">
 							<Col span={12}>
@@ -76,7 +154,11 @@ const SignUp = () => {
 							</Col>
 						</Row>
 						<Row align="center" justify="center">
-							<Button className="btn" icon={<GoogleOutlined />} size="large">
+							<Button
+								onClick={signInWithGoogle}
+								className="btn"
+								icon={<GoogleOutlined />}
+								size="large">
 								SignIn with Google
 							</Button>
 						</Row>

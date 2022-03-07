@@ -1,110 +1,122 @@
 import React, { useState } from "react";
+import { Button, Col, Divider, Input, Row, Typography } from "antd";
+import { GoogleOutlined } from "@ant-design/icons";
 import { auth, provider } from "../firebase-config";
-import {
-	signInWithEmailAndPassword,
-	signInWithPopup,
-	signOut,
-} from "firebase/auth";
-
-import { Button, Divider, Input, Space, Typography } from "antd";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
-const Signin = () => {
+const SignUp = () => {
 	const navigate = useNavigate();
-	const [details, setDetails] = useState({});
-	const [emailPass, setEmailPass] = useState({ email: "", pass: "" });
+	const [fields, setFields] = useState({ email: "", pass: "" });
+	const [btnIsLoading, setBtnIsLoading] = useState(false);
 
-	const emailPassSignIn = async (e) => {
-		e.preventDefault();
-		const user = await signInWithEmailAndPassword(
-			auth,
-			emailPass.email,
-			emailPass.pass
-		);
-		console.log(user);
-		setDetails(user);
+	const handleChange = (key) => (e) => {
+		setFields({ ...fields, [key]: e.target.value });
 	};
 
-	const handleChange = (prop) => (event) => {
-		setEmailPass({ ...emailPass, [prop]: event.target.value });
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setBtnIsLoading(true);
+		const user = await signInWithEmailAndPassword(
+			auth,
+			fields.email,
+			fields.pass
+		);
+		//console.log(user);
+		setBtnIsLoading(false);
+		setFields({ email: "", pass: "" });
+		navigate("/dashboard");
 	};
 
 	const signInWithGoogle = async () => {
 		const res = await signInWithPopup(auth, provider);
-		setDetails(res);
-		console.log(res);
+		// console.log(res);
+		navigate("/dashboard");
 	};
-	const handleSignOut = () => {
-		signOut(auth)
-			.then(() => {
-				alert("signed out");
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
+
 	return (
 		<>
-			<Space
-				className="signin"
-				size="middle"
-				align="center"
-				direction="vertical">
-				<div>
-					<Title>Signin</Title>
-					<Space size="middle">
-						<Button size="large" type="primary" onClick={signInWithGoogle}>
-							Signin with Google
-						</Button>
-						<Button size="large" type="primary" onClick={handleSignOut}>
-							Signout
-						</Button>
-					</Space>
-				</div>
-				<div>
-					<form onSubmit={emailPassSignIn}>
-						<Space size="middle" direction="vertical">
-							<div>
-								<Input
-									size="large"
-									value={emailPass.email}
-									onChange={handleChange("email")}
-									type="email"
-									placeholder="email"
-									name="email"
-								/>
-								<Input
-									size="large"
-									value={emailPass.pass}
-									onChange={handleChange("pass")}
-									type="password"
-									name="email"
-								/>
-							</div>
-							<Space size="middle">
-								<Button size="large" htmlType="submit" type="primary">
-									Submit
-								</Button>
-							</Space>
-						</Space>
-					</form>
-				</div>
-				<Divider />
-				<Space size="middle">
-					<Button size="large" onClick={() => navigate("signup")}>
-						Sign UP
-					</Button>
-					<Button size="large" onClick={() => navigate("posts")}>
-						Posts
-					</Button>
-				</Space>
-				<Divider />
-				<div>{details?.user?.email}</div>
-			</Space>
+			<Row justify="center" align="middle" className="signup">
+				<Col span={24}>
+					<Row justify="center">
+						<Col>
+							<Title>Sign In</Title>
+						</Col>
+					</Row>
+					<div className="input-fields">
+						<form onSubmit={handleSubmit}>
+							<Row className="input-control" justify="center">
+								<Col lg={{ span: 8 }} sm={{ span: 16 }} xs={{ span: 20 }}>
+									<Input
+										className="input-field"
+										size="large"
+										type={"email"}
+										placeholder="E-mail"
+										value={fields.email}
+										onChange={handleChange("email")}
+									/>
+								</Col>
+							</Row>
+							<Row className="input-control" justify="center">
+								<Col lg={{ span: 8 }} sm={{ span: 16 }} xs={{ span: 20 }}>
+									<Input.Password
+										className="input-field"
+										size="large"
+										type={"password"}
+										placeholder="password"
+										value={fields.pass}
+										onChange={handleChange("pass")}
+									/>
+								</Col>
+							</Row>
+							<Row className="input-control" align="center" justify="center">
+								<Col lg={{ span: 6 }} sm={{ span: 14 }} xs={{ span: 20 }}>
+									<Button
+										htmlType="submit"
+										className="btn"
+										loading={btnIsLoading}
+										size="large"
+										type="primary">
+										Signin
+									</Button>
+								</Col>
+							</Row>
+						</form>
+						<div className="links">
+							<Button onClick={() => navigate("/signup")} type="link">
+								Don't have an account? Signup
+							</Button>
+						</div>
+
+						<Row align="center" justify="center">
+							<Col span={12}>
+								<Divider />
+							</Col>
+						</Row>
+						<Row align="center" justify="center">
+							<Text>OR</Text>
+						</Row>
+						<Row align="center" justify="center">
+							<Col span={12}>
+								<Divider />
+							</Col>
+						</Row>
+						<Row align="center" justify="center">
+							<Button
+								onClick={signInWithGoogle}
+								className="btn"
+								icon={<GoogleOutlined />}
+								size="large">
+								SignIn with Google
+							</Button>
+						</Row>
+					</div>
+				</Col>
+			</Row>
 		</>
 	);
 };
 
-export default Signin;
+export default SignUp;
