@@ -4,9 +4,9 @@ import { GoogleOutlined } from "@ant-design/icons";
 import { auth, provider } from "../firebase-config";
 import { addDoc } from "firebase/firestore";
 import {
-	applyActionCode,
 	createUserWithEmailAndPassword,
 	signInWithPopup,
+	sendEmailVerification,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -31,31 +31,30 @@ const SignUp = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setBtnIsLoading(true);
-		const user = await createUserWithEmailAndPassword(
+		const createdUser = await createUserWithEmailAndPassword(
 			auth,
 			fields.email,
 			fields.pass
 		);
-		// user.sendEmailVerification();
-		await user.user.sendEmailVerification();
-		// auth.currentUser.sendEmailVerification();
+		// console.log(createdUser);
+		await sendEmailVerification(createdUser.user);
 
-		const usr = await addDoc(usersCollectionRef, {
+		await addDoc(usersCollectionRef, {
 			email: fields.email,
 			name: fields.name,
 			mobile: fields.mobile,
 		});
 
-		console.log(user);
+		console.log(createdUser);
 		setBtnIsLoading(false);
 		setFields({ email: "", pass: "" });
 		navigate("/");
 	};
 
 	const signInWithGoogle = async () => {
-		const res = await signInWithPopup(auth, provider);
+		await signInWithPopup(auth, provider);
 		// console.log(res);
-		navigate("/dashboard");
+		navigate("/dashboard/home");
 	};
 
 	return (

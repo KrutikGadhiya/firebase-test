@@ -5,11 +5,16 @@ import App from './App';
 
 import { BrowserRouter as Router } from 'react-router-dom'
 
+// contextproviders
+import MessageContextProvider from './context/messageContext'
+
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
+    <MessageContextProvider>
+      <Router>
+        <App />
+      </Router>
+    </MessageContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

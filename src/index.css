@@ -11,6 +11,7 @@
 .signup {
 	min-height: 100vh;
 }
+
 .signup .input-fields {
 	min-height: 60vh;
 	margin-top: 2rem;
@@ -39,4 +40,39 @@
 }
 .signup .input-fields .input-control .input-field {
 	padding: 0.5rem 1rem;
+}
+
+/* dashboard */
+
+.dashboard.ant-layout {
+	min-height: 100vh;
+}
+
+.dashboard .header {
+	background: #177ddc;
+}
+
+.dashboard .sidenav {
+	display: flex;
+	flex-direction: column;
+	/* padding: 1rem; */
+	margin: 1rem 0;
+}
+.dashboard .head {
+	color: #fff;
+	font-size: 1.5rem;
+}
+.dashboard .sidenav .navlink {
+	padding: 0.25rem 1rem;
+	font-size: 1rem;
+	margin: 0.25rem 0;
+	color: #000;
+	/* background: rgba(23, 125, 220, 20%);
+	border-right: 3px solid #177ddc; */
+}
+.dashboard .sidenav .navlink .icon {
+	margin-right: 1rem;
+}
+.dashboard .content {
+	padding: 1rem;
 }

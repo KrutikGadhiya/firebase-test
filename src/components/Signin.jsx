@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Button, Col, Divider, Input, Row, Typography } from "antd";
 import { GoogleOutlined } from "@ant-design/icons";
 import { auth, provider } from "../firebase-config";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { MessageContext } from "../context/messageContext";
 
 const { Title, Text } = Typography;
 
 const SignUp = () => {
 	const navigate = useNavigate();
+	const { openErrorMsg } = useContext(MessageContext);
 	const [fields, setFields] = useState({ email: "", pass: "" });
 	const [btnIsLoading, setBtnIsLoading] = useState(false);
 
@@ -19,21 +21,33 @@ const SignUp = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setBtnIsLoading(true);
-		const user = await signInWithEmailAndPassword(
-			auth,
-			fields.email,
-			fields.pass
-		);
-		//console.log(user);
-		setBtnIsLoading(false);
-		setFields({ email: "", pass: "" });
-		navigate("/dashboard");
+		try {
+			const user = await signInWithEmailAndPassword(
+				auth,
+				fields.email,
+				fields.pass
+			);
+			console.log(user);
+			setBtnIsLoading(false);
+
+			if (user.user.emailVerified) navigate("/dashboard/home");
+			else openErrorMsg("Please verify your email to proceed");
+		} catch (err) {
+			setBtnIsLoading(false);
+			openErrorMsg(err.message.split(":").slice(-1)[0].slice(0, -1));
+			console.log(err);
+		}
 	};
 
 	const signInWithGoogle = async () => {
-		const res = await signInWithPopup(auth, provider);
-		// console.log(res);
-		navigate("/dashboard");
+		try {
+			await signInWithPopup(auth, provider);
+			// console.log(res);
+			navigate("/dashboard/home");
+		} catch (err) {
+			openErrorMsg(err.message.split(":").slice(-1)[0].slice(0, -1));
+			console.log(err);
+		}
 	};
 
 	return (
