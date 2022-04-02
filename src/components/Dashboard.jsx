@@ -1,11 +1,13 @@
 import React from "react";
-import { Layout, Typography } from "antd";
+import { Button, Layout, Typography } from "antd";
 import {
 	QuestionOutlined,
 	HomeOutlined,
 	FileAddOutlined,
 } from "@ant-design/icons";
-import { NavLink, Outlet } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase-config";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 const { Sider, Header, Content } = Layout;
 const { Text } = Typography;
@@ -34,11 +36,17 @@ const navActive = {
 };
 
 const Dashboard = () => {
+	const navigate = useNavigate();
+	const handleLogout = async () => {
+		await signOut(auth);
+		navigate("/");
+	};
 	return (
 		<>
 			<Layout className="dashboard">
 				<Header className="header">
 					<Text className="head">Welcome Krutik</Text>
+					<Button onClick={handleLogout}>Logout</Button>
 				</Header>
 				<Layout>
 					<Sider theme="light">

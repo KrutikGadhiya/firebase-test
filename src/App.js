@@ -6,6 +6,7 @@ import Posts from './components/Posts';
 import SignUp from './components/SignUp';
 import Dashboard from './components/Dashboard';
 import Dummy from './components/Dummy';
+import Quizes from './components/Quizes';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
         <Route path='/dashboard' element={<Dashboard />}>
           <Route path='home' element={<Dummy title="Home" />} />
           <Route path='questions' element={<Dummy title="Questions" />} />
-          <Route path='quiz' element={<Dummy title="Quiz" />} />
+          <Route path='quiz' element={<Quizes />} />
         </Route>
       </Routes>
     </div>

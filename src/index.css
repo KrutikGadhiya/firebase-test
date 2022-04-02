@@ -50,6 +50,9 @@
 
 .dashboard .header {
 	background: #177ddc;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .dashboard .sidenav {
@@ -61,6 +64,7 @@
 .dashboard .head {
 	color: #fff;
 	font-size: 1.5rem;
+	flex: 1;
 }
 .dashboard .sidenav .navlink {
 	padding: 0.25rem 1rem;
